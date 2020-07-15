@@ -36,13 +36,16 @@ class MyCapture:
         # 显示全屏截图，在全屏截图上进行区域截图
         self.image = tkinter.PhotoImage(file=png)
         self.canvas.create_image(screenWidth // 2, screenHeight // 2, image=self.image)
+
         # 鼠标左键按下的位置
         def onLeftButtonDown(event):
             self.X.set(event.x)
             self.Y.set(event.y)
             # 开始截图
             self.sel = True
+
         self.canvas.bind('<Button-1>', onLeftButtonDown)
+
         # 鼠标左键移动，显示选取的区域
         def onLeftButtonMove(event):
             if not self.sel:
@@ -54,7 +57,9 @@ class MyCapture:
             except Exception as e:
                 pass
             lastDraw = self.canvas.create_rectangle(self.X.get(), self.Y.get(), event.x, event.y, outline='black')
+
         self.canvas.bind('<B1-Motion>', onLeftButtonMove)
+
         # 获取鼠标左键抬起的位置，保存区域截图
         def onLeftButtonUp(event):
             self.sel = False
@@ -80,6 +85,7 @@ class MyCapture:
 
             # 关闭当前窗口
             self.top.destroy()
+
         self.canvas.bind('<ButtonRelease-1>', onLeftButtonUp)
         self.canvas.pack(fill=tkinter.BOTH, expand=tkinter.YES)
         # 开始截图
