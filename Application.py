@@ -3,9 +3,8 @@ import tkinter
 import tkinter.filedialog
 import keyboard
 from time import sleep
-
+import win32gui
 from PIL import ImageGrab
-
 from Api import Api
 from TranslateThread import TranslateThread
 
@@ -91,10 +90,14 @@ class MyCapture:
         # 开始截图
 
 
-def buttonCaptureClick():
-    # 最小化主窗口
-    root.state('icon')
-    sleep(0.2)
+def buttonCaptureClick(isHotkey):
+    if isHotkey:
+        # 获取焦点 一个hack windows下在用户按住alt的情况下才允许软件进行焦点切换
+        keyboard.press("alt")
+        win32gui.SetForegroundWindow(root.winfo_id())
+        keyboard.release("alt")
+        # 隐藏窗口
+        root.withdraw()
     filename = 'temp.png'
     im = ImageGrab.grab()
     im.save(filename)
@@ -107,8 +110,9 @@ def buttonCaptureClick():
     os.remove(filename)
 
 
-buttonCapture = tkinter.Button(root, text='截图', command=buttonCaptureClick)
+buttonCapture = tkinter.Button(root, text='截图', command=lambda: buttonCaptureClick(False))
 buttonCapture.place(x=10, y=10, width=80, height=20)
 # 启动快捷键线程
-keyboard.add_hotkey("CTRL+alt+1", buttonCaptureClick)
+keyboard.add_hotkey("CTRL+0", lambda: buttonCaptureClick(True), suppress=True)
+
 root.mainloop()

@@ -19,6 +19,6 @@ class TranslateThread(threading.Thread):
         # 图片转文本
         sourceText = self.api.image2text(buffer.getvalue())
         # 进行翻译
-        targetText = Api.translate(sourceText)
+        targetText = self.api.translate(sourceText)
         tkinter.messagebox.showinfo(title=None, message=targetText)
         print(targetText)

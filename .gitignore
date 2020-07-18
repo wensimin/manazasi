@@ -2,3 +2,4 @@
 manazasi.iml
 .idea
 __pycache__/
+/config.json
