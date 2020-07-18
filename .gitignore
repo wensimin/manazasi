@@ -1,5 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 manazasi.iml
-.idea
+.idea/
 __pycache__/
 /config.json
+Application.spec
+build/
+dist/
