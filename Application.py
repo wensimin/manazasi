@@ -105,8 +105,8 @@ def buttonCaptureClick(isHotkey):
     # 显示全屏幕截图
     w = MyCapture(filename)
     buttonCapture.wait_window(w.top)
-    # 截图结束，恢复主窗口，并删除临时的全屏幕截图文件
-    # root.state('normal')
+    # 截图结束，进入图标模式，并删除临时的全屏幕截图文件
+    root.state('icon')
     os.remove(filename)
 
 
