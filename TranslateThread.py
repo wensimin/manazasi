@@ -2,14 +2,12 @@ import io
 import threading
 import tkinter.messagebox
 
-from Api import Api
-
 
 # 图片转换翻译线程
 class TranslateThread(threading.Thread):
-    def __init__(self, image):
+    def __init__(self, image, api):
         threading.Thread.__init__(self)
-        self.api = Api()
+        self.api = api
         self.image = image
 
     def run(self):
@@ -20,5 +18,5 @@ class TranslateThread(threading.Thread):
         sourceText = self.api.image2text(buffer.getvalue())
         # 进行翻译
         targetText = self.api.translate(sourceText)
-        tkinter.messagebox.showinfo(title=None, message=targetText)
-        print(targetText)
+        showText = sourceText + "\n" + targetText
+        tkinter.messagebox.showinfo(title=None, message=showText)

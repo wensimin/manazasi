@@ -10,10 +10,20 @@ import json
 import config
 
 
+# 进行ocr的请求
+def ocrRequest(url, params):
+    headers = {'content-type': 'application/x-www-form-urlencoded'}
+    response = requests.post(url, data=params, headers=headers)
+    res = response.json()
+    return res
+
+
 class Api:
     def __init__(self):
         self.expires = 0
         self.token = None
+        # 高精度ocr接口是否超限 ,生命周期单次启动内
+        self.ocrLimitReached = False
         self.config = config.loadConfig()
 
     # 获取token
@@ -39,27 +49,39 @@ class Api:
 
     # ocr 接口,从图片转化成文字
     def image2text(self, image):
-        curToken = self.getBaiduToken()
         imageBase = base64.b64encode(image)
-        # 使用基础识别版本 不支持自动识别语言,暂且固定jap
-        url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" + curToken
         params = {
             "image": imageBase,
             "language_type": "JAP"
         }
-        headers = {'content-type': 'application/x-www-form-urlencoded'}
-        response = requests.post(url, data=params, headers=headers)
-        res = response.json()
-        error = res.get("error")
-        # 请求错误的处理
-        if error:
-            raise Exception(res.get("error_description"))
         # 多行合并
-        words = res.get("words_result")
+        words = self.accurateOcr(params)
         wordString = ""
         for word in words:
             wordString += word.get("words")
         return wordString
+
+    # 基础ocr
+    def generalOcr(self, params):
+        url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" + self.getBaiduToken()
+        res = ocrRequest(url, params)
+        error = res.get("error_code")
+        # 请求错误的处理
+        if error:
+            raise Exception(res.get("error_msg"))
+        return res.get("words_result")
+
+    # 高精度ocr
+    def accurateOcr(self, params):
+        if self.ocrLimitReached:
+            return self.generalOcr(params)
+        url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=" + self.getBaiduToken()
+        res = ocrRequest(url, params)
+        error = res.get("error_code")
+        if error in [17, 18, 19]:
+            self.ocrLimitReached = True
+            return self.generalOcr(params)
+        return res.get("words_result")
 
     # 翻译api 使用腾讯sdk
     def translate(self, text):
@@ -84,3 +106,5 @@ class Api:
             return res.get("TargetText")
         except TencentCloudSDKException as err:
             print(err)
+
+

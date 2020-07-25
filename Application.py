@@ -72,7 +72,7 @@ class MyCapture:
             top, bottom = sorted([self.Y.get(), event.y])
             pic = ImageGrab.grab((left + 1, top + 1, right, bottom))
             #  启动翻译线程
-            translateThread = TranslateThread(pic)
+            translateThread = TranslateThread(pic, self.api)
             translateThread.setDaemon(True)
             translateThread.start()
             # # 弹出保存截图对话框
