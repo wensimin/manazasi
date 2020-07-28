@@ -11,12 +11,15 @@ class TranslateThread(threading.Thread):
         self.image = image
 
     def run(self):
-        buffer = io.BytesIO()
-        self.image.save(buffer, format='PNG')
-        self.image.close()
-        # 图片转文本
-        sourceText = self.api.image2text(buffer.getvalue())
-        # 进行翻译
-        targetText = self.api.translate(sourceText)
-        showText = sourceText + "\n" + targetText
-        tkinter.messagebox.showinfo(title=None, message=showText)
+        try:
+            buffer = io.BytesIO()
+            self.image.save(buffer, format='PNG')
+            self.image.close()
+            # 图片转文本
+            sourceText = self.api.image2text(buffer.getvalue())
+            # 进行翻译
+            targetText = self.api.translate(sourceText)
+            showText = sourceText + "\n" + targetText
+            tkinter.messagebox.showinfo(title=None, message=showText)
+        except Exception as e:
+            tkinter.messagebox.showinfo(title=None, message=e)

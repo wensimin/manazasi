@@ -105,6 +105,6 @@ class Api:
             res = json.loads(resp.to_json_string())
             return res.get("TargetText")
         except TencentCloudSDKException as err:
-            print(err)
+            raise Exception(err)
 
 
