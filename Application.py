@@ -5,6 +5,8 @@ import keyboard
 from time import sleep
 import win32gui
 from PIL import ImageGrab
+
+import config
 from Api import Api
 from TranslateThread import TranslateThread
 
@@ -15,11 +17,13 @@ root.geometry('100x40+400+300')
 # 不允许改变窗口大小
 root.resizable(False, False)
 
+config = config.loadConfig()
+
 
 class MyCapture:
     def __init__(self, png):
         # 外部接口相关service对象
-        self.api = Api()
+        self.api = Api(config)
         # 变量X和Y用来记录鼠标左键按下的位置
         self.sel = None
         self.X = tkinter.IntVar(value=0)
@@ -113,6 +117,6 @@ def buttonCaptureClick(isHotkey):
 buttonCapture = tkinter.Button(root, text='截图', command=lambda: buttonCaptureClick(False))
 buttonCapture.place(x=10, y=10, width=80, height=20)
 # 启动快捷键线程
-keyboard.add_hotkey("CTRL+0", lambda: buttonCaptureClick(True), suppress=True)
+keyboard.add_hotkey(config["hotkey"], lambda: buttonCaptureClick(True), suppress=True)
 
 root.mainloop()

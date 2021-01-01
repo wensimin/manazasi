@@ -19,12 +19,12 @@ def ocrRequest(url, params):
 
 
 class Api:
-    def __init__(self):
+    def __init__(self, fileConfig):
         self.expires = 0
         self.token = None
         # 高精度ocr接口是否超限 ,生命周期单次启动内
         self.ocrLimitReached = False
-        self.config = config.loadConfig()
+        self.config = fileConfig
 
     # 获取token
     # 没有持久化token 目前只在一次运行中保证token的复用
