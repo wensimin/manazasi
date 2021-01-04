@@ -13,7 +13,7 @@ from TranslateThread import TranslateThread
 # 创建tkinter主窗口
 root = tkinter.Tk()
 # 指定主窗口位置与大小
-root.geometry('100x40+400+300')
+root.geometry('150x40+400+300')
 # 不允许改变窗口大小
 root.resizable(False, False)
 
@@ -23,7 +23,7 @@ config = config.loadConfig()
 class MyCapture:
     def __init__(self, png):
         # 外部接口相关service对象
-        self.api = Api(config)
+        self.api = Api()
         # 变量X和Y用来记录鼠标左键按下的位置
         self.sel = None
         self.X = tkinter.IntVar(value=0)

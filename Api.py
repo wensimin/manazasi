@@ -1,13 +1,13 @@
-import requests
-import time
 import base64
+import json
+import time
+import config
+import requests
 from tencentcloud.common import credential
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.tmt.v20180321 import tmt_client, models
-import json
-import config
 
 
 # 进行ocr的请求
@@ -18,13 +18,25 @@ def ocrRequest(url, params):
     return res
 
 
+def singleton(api):
+    _instance = {}
+
+    def inner():
+        if api not in _instance:
+            _instance[api] = api()
+        return _instance[api]
+
+    return inner
+
+
+@singleton
 class Api:
-    def __init__(self, fileConfig):
+    def __init__(self):
         self.expires = 0
         self.token = None
         # 高精度ocr接口是否超限 ,生命周期单次启动内
         self.ocrLimitReached = False
-        self.config = fileConfig
+        self.config = config.loadConfig()
 
     # 获取token
     # 没有持久化token 目前只在一次运行中保证token的复用
