@@ -20,8 +20,6 @@ class TranslateThread(threading.Thread):
             sourceText = self.api.image2text(buffer.getvalue())
             # 进行翻译0
             targetText = self.api.translate(sourceText)
-            showText = sourceText + "\n" + targetText
-            #tkinter.messagebox.showinfo(title=None, message=showText)
-            TranslateDialog.show(title=None, inText=sourceText, outText=targetText)
+            TranslateDialog.show(title="翻译结果", inText=sourceText, outText=targetText)
         except Exception as e:
-            tkinter.messagebox.showinfo(title=None, message=e)
+            tkinter.messagebox.showinfo(title="错误", message=e)
